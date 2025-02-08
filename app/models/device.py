@@ -1,9 +1,10 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import String, DateTime
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from .base import Base
 
-
-class Base(DeclarativeBase):
-    pass
+if TYPE_CHECKING:
+    from .measurement import Measurement
 
 
 class Device(Base):
@@ -14,3 +15,5 @@ class Device(Base):
     device_type: Mapped[str] = mapped_column(String(30))
     communication_type: Mapped[str] = mapped_column(String(15))
     registration_date: Mapped[str] = mapped_column(DateTime)
+
+    measurements: Mapped[list["Measurement"]] = relationship(back_populates="device")
