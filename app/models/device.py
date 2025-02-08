@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 from sqlalchemy import String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -10,10 +11,10 @@ if TYPE_CHECKING:
 class Device(Base):
     __tablename__ = 'devices'
 
-    id: Mapped[int] = mapped_column(primary_key=True, auto_increment=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
     device_type: Mapped[str] = mapped_column(String(30))
     communication_type: Mapped[str] = mapped_column(String(15))
-    registration_date: Mapped[str] = mapped_column(DateTime)
+    registration_date: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
 
     measurements: Mapped[list["Measurement"]] = relationship(back_populates="device")

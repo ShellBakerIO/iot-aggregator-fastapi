@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class Measurement(Base):
     __tablename__ = 'measurement'
 
-    id: Mapped[int] = mapped_column(primary_key=True, auto_increment=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
     device_id: Mapped[int] = mapped_column(ForeignKey('devices.id'))
     value: Mapped[str]
     timestamp: Mapped[DateTime] = mapped_column(DateTime, default=datetime.utcnow)
