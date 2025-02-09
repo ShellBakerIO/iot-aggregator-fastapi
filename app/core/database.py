@@ -13,5 +13,4 @@ async_session = sessionmaker(
 
 async def get_db():
     async with async_session() as session:
-        print(session)
         yield session
