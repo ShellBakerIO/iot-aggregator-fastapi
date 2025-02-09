@@ -41,7 +41,7 @@ async def get_device(device_id: int, db: Session = Depends(get_db)):
     return device
 
 
-@app.delete('/devices')
+@app.delete('/devices/{device_id}')
 async def delete_device(device_id: int, db: Session = Depends(get_db)):
     res = await db.execute(select(Device).where(Device.id == device_id))
     device = res.scalars().first()
