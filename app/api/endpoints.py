@@ -51,7 +51,6 @@ async def delete_device(device_id: int, db: Session = Depends(get_db)):
 
     db.delete(device)
     await db.commit()
-    await db.refresh(device)
     return device
 
 
