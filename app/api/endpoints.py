@@ -55,9 +55,14 @@ async def delete_device(device_id: int, db: Session = Depends(get_db)):
 
 
 @app.post('/devices/{device_id}/measurements')
-async def create_measurement(measurement: CreateMeasurement, db: Session = Depends(get_db)):
+async def create_measurement(device_id: int, measurement: CreateMeasurement, db: Session = Depends(get_db)):
+    res = await db.execute(select(Device).where(Device.id == device_id))
+    device = res.scalars().first()
+    if device is None:
+        raise HTTPException(status_code=404, detail=f"Device with ID {device_id} not found")
+
     try:
-        new_measurement = Measurement(**measurement.dict())
+        new_measurement = Measurement(**measurement.dict(), device_id=device_id)
         new_measurement.timestamp = datetime.strptime(new_measurement.timestamp, '%d-%m-%Y')
         db.add(new_measurement)
         await db.commit()
