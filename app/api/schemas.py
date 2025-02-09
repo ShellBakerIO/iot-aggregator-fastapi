@@ -8,7 +8,7 @@ class CreateDevice(BaseModel):
     registration_date: str
 
 
-class CreateMeasurements(BaseModel):
+class CreateMeasurement(BaseModel):
     device_id: int
     value: str
     timestamp: str
