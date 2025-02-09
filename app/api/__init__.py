@@ -1,1 +1,1 @@
-from .schemas import CreateDevice, CreateMeasurements
+from .schemas import CreateDevice, CreateMeasurement

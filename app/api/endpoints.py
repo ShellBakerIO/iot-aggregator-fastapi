@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from .schemas import CreateDevice, CreateMeasurements
+from .schemas import CreateDevice, CreateMeasurement
 from app.models import Device, Measurement
 from app.core import get_db
 app = FastAPI()
@@ -53,3 +53,29 @@ async def delete_device(device_id: int, db: Session = Depends(get_db)):
     await db.commit()
     await db.refresh(device)
     return device
+
+
+@app.post('/devices/{device_id}/measurements')
+async def create_measurement(measurement: CreateMeasurement, db: Session = Depends(get_db)):
+    try:
+        new_measurement = Measurement(**measurement.dict())
+        new_measurement.timestamp = datetime.strptime(new_measurement.timestamp, '%d-%m-%Y')
+        db.add(new_measurement)
+        await db.commit()
+        await db.refresh(new_measurement)
+        return new_measurement
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use 'DD-MM-YYYY'.")
+
+
+@app.get("/devices/{device_id}/measurements")
+async def get_device_measurements(device_id: int, db: Session = Depends(get_db)):
+    res = await db.execute(select(Device).where(Device.id == device_id))
+    device = res.scalars().first()
+
+    if device is None:
+        raise HTTPException(status_code=404, detail=f"Device with ID {device_id} not found")
+
+    res = await db.execute(select(Measurement).where(Measurement.device_id == device_id))
+    measurements = res.scalars().all()
+    return measurements
