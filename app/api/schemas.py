@@ -9,7 +9,6 @@ class CreateDevice(BaseModel):
 
 
 class CreateMeasurement(BaseModel):
-    device_id: int
     value: str
     timestamp: str
 
